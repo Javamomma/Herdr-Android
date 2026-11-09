@@ -250,7 +250,7 @@ class Session(private val context: Context) {
             Snippet("git status", "git status -sb", false),
             Snippet("git log", "git log --oneline -15", false),
             Snippet("Claude Code here", "claude", true),
-            Snippet("TUIOS (new tab)", "tuios", true),
+            Snippet("TUIOS (new tab)", "tuios attach", true),
             Snippet("Run tests", "npm test", false),
         )
         return runCatching {

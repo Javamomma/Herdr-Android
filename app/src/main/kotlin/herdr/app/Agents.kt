@@ -25,6 +25,15 @@ object Agents {
         Known("TUIOS", "tuios"),
     )
 
+    /**
+     * How a program starts. TUIOS reattaches to the most recent session (a new
+     * one if there's none) instead of adding a session for every space.
+     */
+    fun argv(command: String): List<String> = when (command) {
+        "tuios" -> listOf("tuios", "attach")
+        else -> listOf(command)
+    }
+
     fun nameOf(command: String) = (known + programs).firstOrNull { it.command == command }?.name ?: command
 
     fun check(commands: List<String>): List<String> {

@@ -81,7 +81,7 @@ fun Dialogs(session: Session, kind: DialogKind, onDismiss: () -> Unit) {
                 confirmButton = {
                     TextButton(onClick = {
                         val dir = folder.trim().let { f -> if (f.startsWith("~/") && machine == null) session.home?.let { it + f.substring(1) } ?: f else f }
-                        session.newSpace(machine, dir, program?.let { name.ifBlank { it.name } } ?: name, start?.let { Agents.launch(listOf(it)) })
+                        session.newSpace(machine, dir, program?.let { name.ifBlank { it.name } } ?: name, start?.let { Agents.launch(Agents.argv(it)) })
                         onDismiss()
                     }) { Text("Create") }
                 },
