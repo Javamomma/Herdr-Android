@@ -78,16 +78,15 @@ adb shell locksettings clear --old $PIN
 adb shell settings put secure lock_screen_allow_private_notifications 1
 
 echo "4. Allow, tapped while the agent still shows that question, reaches the agent and the notification goes"
+# Folded, the agents list shows every agent with what it says it is doing.
+agents() { adb shell wm size 1080x2520; adb shell wm density 420; adb shell am start -W -n $ACT --es screen agents > /dev/null; sleep 4; screen; }
+agents
+must "Run the database migration?"
+mustnot "Working on it"
 adb shell cmd statusbar expand-notifications
 sleep 2
-mustnot "Working on it"
 tap "Yes, run it"
 sleep 3
-adb shell cmd statusbar collapse
-sleep 1
-screen
-# The demo's agent says this once it gets an answer.
-must "Working on it"
 adb shell cmd statusbar expand-notifications
 sleep 2
 screen
@@ -96,6 +95,12 @@ mustnot "needs you"
 mustnot "Not sent"
 shot 4-answered
 adb shell cmd statusbar collapse
+sleep 1
+agents
+# The demo's agent says this once it gets an answer.
+must "Working on it"
+mustnot "Run the database migration?"
+shot 5-agent-went-on
 
 adb shell wm size reset
 adb shell wm density reset
