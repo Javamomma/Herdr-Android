@@ -17,7 +17,7 @@ texts = [v for n in nodes for v in (n.get("text") or "", n.get("content-desc") o
 if not texts:
     sys.exit(2)
 if "--texts" in sys.argv:
-    print(" | ".join(t.replace("\n", " / ") for t in texts)[:1500])
+    print(" | ".join(t.replace("\n", " / ") for t in texts)[:4000])
     sys.exit(0)
 label = args[1]
 for node in nodes:

@@ -67,7 +67,8 @@ class Notifier(private val context: Context) {
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or if (input != null) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
         val pending = PendingIntent.getBroadcast(context, (address + what).hashCode(), intent, flags)
         val b = NotificationCompat.Action.Builder(0, label, pending).setAuthenticationRequired(true)
-        if (input != null) b.addRemoteInput(input)
+        // No "Yes" / "No" chips made up by Android: a reply is only what the person typed.
+        if (input != null) b.addRemoteInput(input).setAllowGeneratedReplies(false)
         return b.build()
     }
 

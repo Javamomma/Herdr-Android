@@ -38,6 +38,10 @@ must "needs you"
 must "npx prisma migrate deploy"
 must "Yes, run it"
 must "Deny"
+# Android's own suggested replies ("Yes", "No") are off: a reply is only what was typed.
+rc=0; python3 "$HERE/ui.py" "$OUT/ui.xml" "No" > /dev/null || rc=$?
+[ $rc -eq 1 ] || fail "a suggested reply chip is showing"
+echo "ok: no suggested replies"
 screen
 shot 1-question
 adb shell cmd statusbar collapse
@@ -73,14 +77,21 @@ sleep 3
 adb shell locksettings clear --old $PIN
 adb shell settings put secure lock_screen_allow_private_notifications 1
 
-echo "4. Allow, tapped while the agent still shows that question, is sent and the notification goes"
+echo "4. Allow, tapped while the agent still shows that question, reaches the agent and the notification goes"
 adb shell cmd statusbar expand-notifications
 sleep 2
+mustnot "Working on it"
 tap "Yes, run it"
 sleep 3
+adb shell cmd statusbar collapse
+sleep 1
 screen
-must "Watching agents"
-mustnot "Yes, run it"
+# The demo's agent says this once it gets an answer.
+must "Working on it"
+adb shell cmd statusbar expand-notifications
+sleep 2
+screen
+must "Internet"
 mustnot "needs you"
 mustnot "Not sent"
 shot 4-answered
