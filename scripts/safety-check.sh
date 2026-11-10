@@ -81,8 +81,8 @@ echo "4. Allow, tapped while the agent still shows that question, reaches the ag
 # Folded, the agents list shows every agent with what it says it is doing.
 agents() { adb shell wm size 1080x2520; adb shell wm density 420; adb shell am start -W -n $ACT --es screen agents > /dev/null; sleep 4; screen; }
 agents
+must "2 waiting for you"
 must "Run the database migration?"
-mustnot "Working on it"
 adb shell cmd statusbar expand-notifications
 sleep 2
 tap "Yes, run it"
@@ -97,8 +97,8 @@ shot 4-answered
 adb shell cmd statusbar collapse
 sleep 1
 agents
-# The demo's agent says this once it gets an answer.
-must "Working on it"
+# Answered, the demo's Codex goes back to work: one agent is left waiting.
+must "1 waiting for you"
 mustnot "Run the database migration?"
 shot 5-agent-went-on
 
