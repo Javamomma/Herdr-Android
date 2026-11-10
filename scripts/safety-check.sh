@@ -14,9 +14,16 @@ mkdir -p "$OUT"
 shot() { adb exec-out screencap -p > "$OUT/$1.png"; }
 dump() { adb shell uiautomator dump /sdcard/ui.xml > /dev/null 2>&1 || true; adb exec-out cat /sdcard/ui.xml > "$OUT/ui.xml"; }
 fail() { shot failed; echo "FAILED: $1"; adb shell locksettings clear --old $PIN > /dev/null 2>&1 || true; exit 1; }
+# 0: on screen. 1: not on screen. 2: the screen couldn't be read at all.
 sees() { dump; python3 "$HERE/ui.py" --has "$OUT/ui.xml" "$1" > /dev/null; }
 must() { sees "$1" || fail "expected to see: $1"; echo "ok: shows \"$1\""; }
-mustnot() { if sees "$1"; then fail "should not see: $1"; fi; echo "ok: no \"$1\""; }
+mustnot() {
+  rc=0; sees "$1" || rc=$?
+  [ $rc -eq 1 ] || fail "should not see: $1 (0: it is there, 2: the screen couldn't be read; got $rc)"
+  echo "ok: no \"$1\""
+}
+# What the screen says, into the log.
+screen() { dump; echo "   screen: $(python3 "$HERE/ui.py" --texts "$OUT/ui.xml" || echo '(unreadable)')"; }
 tap() { dump; xy=$(python3 "$HERE/ui.py" "$OUT/ui.xml" "$1") || fail "nothing to tap: $1"; adb shell input tap $xy; sleep 2; }
 
 adb shell wm size 1968x2184
@@ -31,6 +38,7 @@ must "needs you"
 must "npx prisma migrate deploy"
 must "Yes, run it"
 must "Deny"
+screen
 shot 1-question
 adb shell cmd statusbar collapse
 sleep 1
@@ -40,6 +48,7 @@ tap "More"
 tap "Close pane"
 must "Close this pane?"
 must "This ends"
+screen
 shot 2-close-asks
 tap "Cancel"
 mustnot "Close this pane?"
@@ -52,6 +61,8 @@ sleep 2
 adb shell input keyevent KEYCODE_WAKEUP
 sleep 3
 shot 3-locked
+screen
+must "An agent needs you"
 mustnot "prisma"
 mustnot "Yes, run it"
 adb shell input keyevent KEYCODE_MENU
@@ -67,7 +78,10 @@ adb shell cmd statusbar expand-notifications
 sleep 2
 tap "Yes, run it"
 sleep 3
+screen
+must "Watching agents"
 mustnot "Yes, run it"
+mustnot "needs you"
 mustnot "Not sent"
 shot 4-answered
 adb shell cmd statusbar collapse
