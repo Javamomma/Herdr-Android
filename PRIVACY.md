@@ -26,8 +26,9 @@ Settings.
 
 **Notifications**
 They show an agent's name, status, the title it reports and, for an agent
-waiting on you, the question on its screen, on your phone only. On the lock
-screen they say only that an agent needs you. Allow, Deny and Reply send keys
+waiting on you, the question on its screen, on your phone only. On a locked
+phone set to hide sensitive notifications, they say only that an agent needs
+you. Allow, Deny and Reply send keys
 or text to that agent on your Mac, need the phone unlocked, and are sent only
 while the agent still shows the question you saw. With the app lock on,
 notifications and the widget name no agent and have no buttons.
